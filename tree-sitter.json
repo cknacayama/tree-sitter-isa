@@ -1,0 +1,39 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "isa",
+      "camelcase": "Isa",
+      "title": "Isa",
+      "scope": "source.isa",
+      "file-types": [
+        "isa"
+      ],
+      "injection-regex": "^isa$",
+      "class-name": "TreeSitterIsa"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Isa language grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Cristiano Kenji",
+        "email": "cristianonacayama@gmail.com"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/cknacayama/tree-sitter-isa"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}
