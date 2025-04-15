@@ -97,7 +97,7 @@ module.exports = grammar({
       $._type_identifier,
       $.identifier,
       optional(
-        seq('=', sepBy1($.value_definition, ','))
+        seq('=', sepBy1(choice($.value_definition, $.let_bind), ','))
       ),
     ),
 
@@ -246,7 +246,7 @@ module.exports = grammar({
 
     unary_expression: $ => prec.right(choice(
       seq('-', $._expression),
-      seq('not', $._expression)
+      seq('!', $._expression)
     )),
 
     binary_expression: $ => choice(

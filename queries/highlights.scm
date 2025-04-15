@@ -55,7 +55,8 @@
 
 (binary_expression
 	operator: "|>"
-    rhs: (identifier) @function)
+    rhs: (identifier) @function
+    (#lua-match? @function "^[a-z_\']"))
 
 (binary_expression
 	operator: "|>"
@@ -77,8 +78,6 @@
   "instance"
 ] @keyword
 
-"not" @keyword.operator
-
 [
   ">"
   ">="
@@ -96,6 +95,7 @@
   "||"
   "..="
   ".."
+  "!"
 ] @operator
 
 [
