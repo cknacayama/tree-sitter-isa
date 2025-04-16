@@ -38,9 +38,12 @@ function startBy(rule, sep) {
  * @param {string | number} precedence
  * @param {RuleOrLiteral} op
  * @param {RuleOrLiteral} operand
- * @return {PrecLeftRule}  
+ * @return {PrecLeftRule|PrecRightRule}  
  */
-function binaryExpression(precedence, op, operand) {
+function binaryExpression(precedence, op, operand, right = false) {
+  if (right) {
+    return prec.right(precedence, seq(field('lhs', operand), field('operator', op), field('rhs', operand)));
+  }
   return prec.left(precedence, seq(field('lhs', operand), field('operator', op), field('rhs', operand)));
 }
 
@@ -56,6 +59,7 @@ module.exports = grammar({
     $._simple_type,
     $._simple_pattern,
     $._type_identifier,
+    $._root_identifier,
     $._module_identifier
   ],
 
@@ -71,7 +75,29 @@ module.exports = grammar({
 
     module_declaration: $ => seq(
       'module',
-      $._module_identifier
+      $._module_identifier,
+      optional(
+        seq(
+          'with',
+          $.import_clause
+        )
+      ),
+    ),
+
+    import_clause: $ => seq(
+      '{',
+      sepBy($.import_identifier, ','),
+      '}'
+    ),
+
+    import_identifier: $ => seq(
+      $.path_identifier,
+      optional($._import_multiple),
+    ),
+
+    _import_multiple: $ => choice(
+      $.import_clause,
+      '*'
     ),
 
     _definition: $ => choice(
@@ -104,7 +130,7 @@ module.exports = grammar({
     instance_definition: $ => seq(
       'instance',
       optional($.constraint_set),
-      $._type_identifier,
+      $.path_identifier,
       $._type,
       optional(
         seq('=', sepBy1($.let_bind, ','))
@@ -113,7 +139,7 @@ module.exports = grammar({
 
     constraint_set: $ => seq(
       '{',
-      sepBy(seq(optional($._type_identifier), $.identifier), ','),
+      sepBy(seq(optional($.path_identifier), $.identifier), ','),
       '}',
       '=>'
     ),
@@ -132,7 +158,7 @@ module.exports = grammar({
     value_definition: $ => seq(
       'val',
       optional($.constraint_set),
-      field('name', choice($.identifier, $.module_access)),
+      field('name', $.identifier),
       repeat($.identifier),
       ':',
       $._type
@@ -163,7 +189,7 @@ module.exports = grammar({
 
     _simple_type: $ => choice(
       $._primitive_type,
-      $._type_identifier,
+      $.path_identifier,
       $.tuple_type
     ),
 
@@ -192,12 +218,10 @@ module.exports = grammar({
       $.let_expression,
       $.if_expression,
       $.match_expression,
-      $.module_access,
-      $.class_access,
     ),
 
     _primary_expression: $ => prec(10, choice(
-      $.identifier,
+      $.path_identifier,
       $.integer_literal,
       $.boolean_literal,
       $.string_literal,
@@ -207,7 +231,7 @@ module.exports = grammar({
 
     let_bind: $ => seq(
       'let',
-      field('name', choice($.identifier, $.module_access)),
+      field('name', $.identifier),
       repeat(field('parameter', $._simple_pattern)),
       '=',
       field('bind', $._expression),
@@ -235,11 +259,11 @@ module.exports = grammar({
     ),
 
     call_expression: $ => prec.left(seq(
-      field('callee', choice(
-        $.call_expression,
-        $.module_access,
-        $.class_access,
-        $._primary_expression),
+      field('callee',
+        choice(
+          $.call_expression,
+          $._primary_expression,
+        )
       ),
       field('argument', $._primary_expression),
     )),
@@ -264,6 +288,7 @@ module.exports = grammar({
       binaryExpression(6, '*', $._expression),
       binaryExpression(6, '/', $._expression),
       binaryExpression(6, '%', $._expression),
+      binaryExpression(7, '.', $._expression, true),
     ),
 
     match_expression: $ => prec.right(seq(
@@ -287,8 +312,8 @@ module.exports = grammar({
     ),
 
     _simple_pattern: $ => prec(10, choice(
+      $.path_identifier,
       $._literal_pattern,
-      $.identifier,
       $.tuple_pattern,
       '_',
     )),
@@ -347,9 +372,9 @@ module.exports = grammar({
 
     constructor_pattern: $ => seq(
       field('ctor',
-        $.identifier
+        $.path_identifier
       ),
-      repeat($._simple_pattern),
+      repeat1($._simple_pattern),
     ),
 
     _literal_pattern: $ => choice(
@@ -359,23 +384,14 @@ module.exports = grammar({
       $.character_literal,
     ),
 
-    module_access: $ => seq(
-      choice(
-        $._module_identifier,
-        $.module_access,
-      ),
-      '.',
-      field('member', $.identifier),
-    ),
-
-    class_access: $ => seq(
-      $._type_identifier,
-      '::',
-      field('member', $.identifier),
+    path_identifier: $ => choice(
+      $._root_identifier,
+      seq($.path_identifier, '::', field('member', $.identifier)),
     ),
 
     _type_identifier: $ => alias($.identifier, $.type_identifier),
     _module_identifier: $ => alias($.identifier, $.module_identifier),
+    _root_identifier: $ => alias($.identifier, $.root_identifier),
 
     boolean_literal: _ => choice(
       'true',

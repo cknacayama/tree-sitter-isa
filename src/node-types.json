@@ -28,6 +28,10 @@
           "named": true
         },
         {
+          "type": "path_identifier",
+          "named": true
+        },
+        {
           "type": "polymorphic_type",
           "named": true
         },
@@ -79,14 +83,6 @@
             "named": true
           },
           {
-            "type": "class_access",
-            "named": true
-          },
-          {
-            "type": "identifier",
-            "named": true
-          },
-          {
             "type": "if_expression",
             "named": true
           },
@@ -107,7 +103,7 @@
             "named": true
           },
           {
-            "type": "module_access",
+            "type": "path_identifier",
             "named": true
           },
           {
@@ -146,6 +142,10 @@
           },
           {
             "type": "-",
+            "named": false
+          },
+          {
+            "type": ".",
             "named": false
           },
           {
@@ -215,14 +215,6 @@
             "named": true
           },
           {
-            "type": "class_access",
-            "named": true
-          },
-          {
-            "type": "identifier",
-            "named": true
-          },
-          {
             "type": "if_expression",
             "named": true
           },
@@ -243,7 +235,7 @@
             "named": true
           },
           {
-            "type": "module_access",
+            "type": "path_identifier",
             "named": true
           },
           {
@@ -300,14 +292,6 @@
             "named": true
           },
           {
-            "type": "class_access",
-            "named": true
-          },
-          {
-            "type": "identifier",
-            "named": true
-          },
-          {
             "type": "if_expression",
             "named": true
           },
@@ -328,7 +312,7 @@
             "named": true
           },
           {
-            "type": "module_access",
+            "type": "path_identifier",
             "named": true
           },
           {
@@ -374,14 +358,6 @@
             "named": true
           },
           {
-            "type": "class_access",
-            "named": true
-          },
-          {
-            "type": "identifier",
-            "named": true
-          },
-          {
             "type": "if_expression",
             "named": true
           },
@@ -402,7 +378,7 @@
             "named": true
           },
           {
-            "type": "module_access",
+            "type": "path_identifier",
             "named": true
           },
           {
@@ -427,32 +403,6 @@
       "types": [
         {
           "type": "escape_sequence",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "class_access",
-    "named": true,
-    "fields": {
-      "member": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "type_identifier",
           "named": true
         }
       ]
@@ -502,7 +452,7 @@
           "named": true
         },
         {
-          "type": "type_identifier",
+          "type": "path_identifier",
           "named": true
         }
       ]
@@ -540,11 +490,11 @@
           "named": true
         },
         {
-          "type": "tuple_type",
+          "type": "path_identifier",
           "named": true
         },
         {
-          "type": "type_identifier",
+          "type": "tuple_type",
           "named": true
         }
       ]
@@ -559,7 +509,7 @@
         "required": true,
         "types": [
           {
-            "type": "identifier",
+            "type": "path_identifier",
             "named": true
           }
         ]
@@ -578,11 +528,11 @@
           "named": true
         },
         {
-          "type": "identifier",
+          "type": "integer_literal",
           "named": true
         },
         {
-          "type": "integer_literal",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -621,15 +571,15 @@
           "named": true
         },
         {
+          "type": "path_identifier",
+          "named": true
+        },
+        {
           "type": "polymorphic_type",
           "named": true
         },
         {
           "type": "tuple_type",
-          "named": true
-        },
-        {
-          "type": "type_identifier",
           "named": true
         }
       ]
@@ -660,14 +610,6 @@
           "named": true
         },
         {
-          "type": "class_access",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
           "type": "if_expression",
           "named": true
         },
@@ -688,7 +630,7 @@
           "named": true
         },
         {
-          "type": "module_access",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -697,6 +639,40 @@
         },
         {
           "type": "unary_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "import_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "import_identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "import_identifier",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "import_clause",
+          "named": true
+        },
+        {
+          "type": "path_identifier",
           "named": true
         }
       ]
@@ -735,15 +711,15 @@
           "named": true
         },
         {
+          "type": "path_identifier",
+          "named": true
+        },
+        {
           "type": "polymorphic_type",
           "named": true
         },
         {
           "type": "tuple_type",
-          "named": true
-        },
-        {
-          "type": "type_identifier",
           "named": true
         }
       ]
@@ -785,14 +761,6 @@
           "named": true
         },
         {
-          "type": "class_access",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
           "type": "if_expression",
           "named": true
         },
@@ -813,7 +781,7 @@
           "named": true
         },
         {
-          "type": "module_access",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -864,14 +832,6 @@
             "named": true
           },
           {
-            "type": "class_access",
-            "named": true
-          },
-          {
-            "type": "identifier",
-            "named": true
-          },
-          {
             "type": "if_expression",
             "named": true
           },
@@ -892,7 +852,7 @@
             "named": true
           },
           {
-            "type": "module_access",
+            "type": "path_identifier",
             "named": true
           },
           {
@@ -911,10 +871,6 @@
         "types": [
           {
             "type": "identifier",
-            "named": true
-          },
-          {
-            "type": "module_access",
             "named": true
           }
         ]
@@ -936,11 +892,11 @@
             "named": true
           },
           {
-            "type": "identifier",
+            "type": "integer_literal",
             "named": true
           },
           {
-            "type": "integer_literal",
+            "type": "path_identifier",
             "named": true
           },
           {
@@ -980,14 +936,6 @@
           "named": true
         },
         {
-          "type": "class_access",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
           "type": "if_expression",
           "named": true
         },
@@ -1012,7 +960,7 @@
           "named": true
         },
         {
-          "type": "module_access",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -1051,15 +999,7 @@
           "named": true
         },
         {
-          "type": "class_access",
-          "named": true
-        },
-        {
           "type": "constructor_pattern",
-          "named": true
-        },
-        {
-          "type": "identifier",
           "named": true
         },
         {
@@ -1083,11 +1023,11 @@
           "named": true
         },
         {
-          "type": "module_access",
+          "type": "or_pattern",
           "named": true
         },
         {
-          "type": "or_pattern",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -1126,43 +1066,17 @@
     }
   },
   {
-    "type": "module_access",
-    "named": true,
-    "fields": {
-      "member": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "module_access",
-          "named": true
-        },
-        {
-          "type": "module_identifier",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "module_declaration",
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "import_clause",
+          "named": true
+        },
         {
           "type": "module_identifier",
           "named": true
@@ -1199,15 +1113,7 @@
           "named": true
         },
         {
-          "type": "class_access",
-          "named": true
-        },
-        {
           "type": "class_definition",
-          "named": true
-        },
-        {
-          "type": "identifier",
           "named": true
         },
         {
@@ -1235,11 +1141,11 @@
           "named": true
         },
         {
-          "type": "module_access",
+          "type": "module_declaration",
           "named": true
         },
         {
-          "type": "module_declaration",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -1282,15 +1188,15 @@
           "named": true
         },
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
           "type": "integer_literal",
           "named": true
         },
         {
           "type": "or_pattern",
+          "named": true
+        },
+        {
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -1325,6 +1231,36 @@
     }
   },
   {
+    "type": "path_identifier",
+    "named": true,
+    "fields": {
+      "member": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "path_identifier",
+          "named": true
+        },
+        {
+          "type": "root_identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "polymorphic_type",
     "named": true,
     "fields": {},
@@ -1345,11 +1281,11 @@
           "named": true
         },
         {
-          "type": "tuple_type",
+          "type": "path_identifier",
           "named": true
         },
         {
-          "type": "type_identifier",
+          "type": "tuple_type",
           "named": true
         }
       ]
@@ -1501,15 +1437,15 @@
           "named": true
         },
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
           "type": "integer_literal",
           "named": true
         },
         {
           "type": "or_pattern",
+          "named": true
+        },
+        {
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -1568,15 +1504,15 @@
           "named": true
         },
         {
+          "type": "path_identifier",
+          "named": true
+        },
+        {
           "type": "polymorphic_type",
           "named": true
         },
         {
           "type": "tuple_type",
-          "named": true
-        },
-        {
-          "type": "type_identifier",
           "named": true
         }
       ]
@@ -1630,14 +1566,6 @@
           "named": true
         },
         {
-          "type": "class_access",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
           "type": "if_expression",
           "named": true
         },
@@ -1658,7 +1586,7 @@
           "named": true
         },
         {
-          "type": "module_access",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -1682,10 +1610,6 @@
         "types": [
           {
             "type": "identifier",
-            "named": true
-          },
-          {
-            "type": "module_access",
             "named": true
           }
         ]
@@ -1720,15 +1644,15 @@
           "named": true
         },
         {
+          "type": "path_identifier",
+          "named": true
+        },
+        {
           "type": "polymorphic_type",
           "named": true
         },
         {
           "type": "tuple_type",
-          "named": true
-        },
-        {
-          "type": "type_identifier",
           "named": true
         }
       ]
@@ -1917,6 +1841,10 @@
   },
   {
     "type": "module_identifier",
+    "named": true
+  },
+  {
+    "type": "root_identifier",
     "named": true
   },
   {

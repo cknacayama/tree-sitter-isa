@@ -10,57 +10,53 @@
 (identifier) @variable
 ((identifier) @constructor
  (#lua-match? @constructor "^[A-Z]"))
+(root_identifier) @variable
+((root_identifier) @constructor
+ (#lua-match? @constructor "^[A-Z]"))
 (type_identifier) @type
 ((type_identifier) @variable
- (#lua-match? @variable "^[a-z_\']"))
+ (#lua-match? @variable "^[a-z_]"))
 (module_identifier) @namespace
+((module_identifier) @type
+ (#lua-match? @type "^[A-Z]"))
 
-(module_access
-  (module_access member: (identifier) @namespace))
-(class_access
-  member: (identifier) @function)
+(path_identifier
+  (path_identifier (root_identifier) @namespace)
+    member: (_)
+      (#lua-match? @namespace "^[a-z_]"))
+(path_identifier
+  (path_identifier member: (identifier) @namespace)
+    (#lua-match? @namespace "^[a-z_]"))
+(import_identifier
+  (path_identifier (root_identifier) @namespace)
+      (#lua-match? @namespace "^[a-z_]"))
+
 (let_bind
   name: (identifier) @function
-  parameter: (identifier) @variable.parameter)
+  parameter: (path_identifier (root_identifier) @variable.parameter)
+    (#lua-match? @variable.parameter "^[a-z_]"))
 (let_bind
   name: (identifier) @function
   bind: (lambda_expression))
-(let_bind
-  name: (module_access member: (identifier) @function)
-  parameter: (identifier) @variable.parameter)
-(let_bind
-  name: (module_access member: (identifier) @function)
-  bind: (lambda_expression))
 (call_expression
-  callee: (identifier) @function)
+  callee: (path_identifier (root_identifier) @function)
+    (#lua-match? @function "^[a-z_]"))
 (call_expression
-  callee: (identifier) @constructor
-  (#lua-match? @constructor "^[A-Z]"))
-(call_expression
-  callee: (module_access
-    member: (identifier) @function))
-(constructor
-  ctor: (identifier) @constructor)
-(constructor_pattern
-  ctor: (identifier) @constructor)
+  callee: (path_identifier
+    member: (identifier) @function)
+      (#lua-match? @function "^[a-z_]"))
 (lambda_expression
   parameter: (identifier) @variable.parameter)
 
 (value_definition
 	name: (identifier) @function
     (function_type))
-(value_definition
-	name: (module_access member: (identifier) @function)
-    (function_type))
 
 (binary_expression
 	operator: "|>"
-    rhs: (identifier) @function
-    (#lua-match? @function "^[a-z_\']"))
+    rhs: (path_identifier (root_identifier) @function)
+    (#lua-match? @function "^[a-z_]"))
 
-(binary_expression
-	operator: "|>"
-    rhs: (module_access member: (identifier) @function))
 [
   "type"
   "alias"
@@ -95,6 +91,7 @@
   "||"
   "..="
   ".."
+  "."
   "!"
 ] @operator
 
@@ -112,7 +109,6 @@
   "->"
   "=>"
   ":"
-  "."
   "::"
 ] @punctuation.delimiter
 
