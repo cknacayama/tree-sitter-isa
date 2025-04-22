@@ -53,9 +53,24 @@
     (function_type))
 
 (binary_expression
-	operator: "|>"
-    rhs: (path_identifier (root_identifier) @function)
+  lhs: (path_identifier (root_identifier) @function)
+	  operator: "$"
     (#lua-match? @function "^[a-z_]"))
+
+(binary_expression
+	  operator: ">>="
+      rhs: (path_identifier (root_identifier) @function)
+    (#lua-match? @function "^[a-z_]"))
+
+(binary_expression
+  lhs: (path_identifier (root_identifier) @function)
+	  operator: "."
+      (#lua-match? @function "^[a-z_]"))
+
+(binary_expression
+	  operator: "."
+      rhs: (path_identifier (root_identifier) @function)
+      (#lua-match? @function "^[a-z_]"))
 
 [
   "type"
@@ -86,12 +101,14 @@
   "*"
   "/"
   "%"
-  "|>"
   "&&"
   "||"
   "..="
   ".."
   "."
+  ">>"
+  ">>="
+  "$"
   "!"
 ] @operator
 

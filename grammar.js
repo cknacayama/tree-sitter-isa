@@ -75,6 +75,7 @@ module.exports = grammar({
 
     module_declaration: $ => seq(
       'module',
+      optional('!'),
       $._module_identifier,
       optional(
         seq(
@@ -258,7 +259,7 @@ module.exports = grammar({
       $._expression
     ),
 
-    call_expression: $ => prec.left(seq(
+    call_expression: $ => prec.left(9, seq(
       field('callee',
         choice(
           $.call_expression,
@@ -274,21 +275,23 @@ module.exports = grammar({
     )),
 
     binary_expression: $ => choice(
-      binaryExpression(1, '|>', $._expression),
-      binaryExpression(2, '||', $._expression),
-      binaryExpression(3, '&&', $._expression),
-      binaryExpression(4, '>', $._expression),
-      binaryExpression(4, '>=', $._expression),
-      binaryExpression(4, '<', $._expression),
-      binaryExpression(4, '<=', $._expression),
-      binaryExpression(4, '=', $._expression),
-      binaryExpression(4, '!=', $._expression),
-      binaryExpression(5, '+', $._expression),
-      binaryExpression(5, '-', $._expression),
-      binaryExpression(6, '*', $._expression),
-      binaryExpression(6, '/', $._expression),
-      binaryExpression(6, '%', $._expression),
-      binaryExpression(7, '.', $._expression, true),
+      binaryExpression(1, '$', $._expression),
+      binaryExpression(2, '>>', $._expression),
+      binaryExpression(2, '>>=', $._expression),
+      binaryExpression(3, '||', $._expression),
+      binaryExpression(4, '&&', $._expression),
+      binaryExpression(5, '>', $._expression),
+      binaryExpression(5, '>=', $._expression),
+      binaryExpression(5, '<', $._expression),
+      binaryExpression(5, '<=', $._expression),
+      binaryExpression(5, '=', $._expression),
+      binaryExpression(5, '!=', $._expression),
+      binaryExpression(6, '+', $._expression),
+      binaryExpression(6, '-', $._expression),
+      binaryExpression(7, '*', $._expression),
+      binaryExpression(7, '/', $._expression),
+      binaryExpression(7, '%', $._expression),
+      binaryExpression(8, '.', $._expression, true),
     ),
 
     match_expression: $ => prec.right(seq(
