@@ -31,14 +31,13 @@
   (path_identifier (root_identifier) @namespace)
       (#lua-match? @namespace "^[a-z_]"))
 
-(let_bind
+(let_definition
   name: (identifier) @function
   parameter: _)
-(let_bind
-  name: (identifier) @function
+(let_definition
   parameter: (path_identifier (root_identifier) @variable.parameter)
     (#lua-match? @variable.parameter "^[a-z_]"))
-(let_bind
+(let_definition
   name: (identifier) @function
   bind: (lambda_expression))
 (call_expression
@@ -70,7 +69,6 @@
   "val"
   "class"
   "instance"
-  "operator"
   "infix"
   "infixl"
   "infixr"

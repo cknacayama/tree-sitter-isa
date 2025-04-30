@@ -294,65 +294,11 @@
         },
         {
           "type": "SYMBOL",
+          "name": "let_definition"
+        },
+        {
+          "type": "SYMBOL",
           "name": "_expression"
-        }
-      ]
-    },
-    "operator_definition": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "operator"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "constraint_set"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "operator_type"
-            },
-            {
-              "type": "REPEAT",
-              "content": {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": ","
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "operator_type"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": ","
-                },
-                {
-                  "type": "BLANK"
-                }
-              ]
-            }
-          ]
         }
       ]
     },
@@ -377,7 +323,7 @@
         }
       ]
     },
-    "operator_type": {
+    "operator_definition": {
       "type": "SEQ",
       "members": [
         {
@@ -387,6 +333,18 @@
         {
           "type": "SYMBOL",
           "name": "integer_literal"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "constraint_set"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
@@ -487,7 +445,11 @@
                         },
                         {
                           "type": "SYMBOL",
-                          "name": "let_bind"
+                          "name": "let_definition"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "operator_definition"
                         }
                       ]
                     },
@@ -509,7 +471,11 @@
                               },
                               {
                                 "type": "SYMBOL",
-                                "name": "let_bind"
+                                "name": "let_definition"
+                              },
+                              {
+                                "type": "SYMBOL",
+                                "name": "operator_definition"
                               }
                             ]
                           }
@@ -581,7 +547,7 @@
                   "members": [
                     {
                       "type": "SYMBOL",
-                      "name": "let_bind"
+                      "name": "let_definition"
                     },
                     {
                       "type": "REPEAT",
@@ -594,7 +560,7 @@
                           },
                           {
                             "type": "SYMBOL",
-                            "name": "let_bind"
+                            "name": "let_definition"
                           }
                         ]
                       }
@@ -1230,7 +1196,7 @@
         }
       ]
     },
-    "let_bind": {
+    "let_definition": {
       "type": "SEQ",
       "members": [
         {
@@ -1242,7 +1208,7 @@
           "name": "name",
           "content": {
             "type": "SYMBOL",
-            "name": "identifier"
+            "name": "_symbol"
           }
         },
         {
@@ -1278,26 +1244,18 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "let_bind"
+            "name": "let_definition"
           },
           {
-            "type": "CHOICE",
+            "type": "SEQ",
             "members": [
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "STRING",
-                    "value": "in"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "_expression"
-                  }
-                ]
+                "type": "STRING",
+                "value": "in"
               },
               {
-                "type": "BLANK"
+                "type": "SYMBOL",
+                "name": "_expression"
               }
             ]
           }
@@ -1915,9 +1873,39 @@
         }
       ]
     },
+    "operator": {
+      "type": "PATTERN",
+      "value": "[!?^$%&/*+.<=>|-]+"
+    },
     "identifier": {
       "type": "PATTERN",
       "value": "[a-zA-Z_][a-zA-Z0-9_]*"
+    },
+    "_symbol": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "operator"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        }
+      ]
     },
     "number_literal": {
       "type": "PATTERN",
@@ -1962,10 +1950,6 @@
     "string_content": {
       "type": "PATTERN",
       "value": "[^\"\\\\\\n]+"
-    },
-    "operator": {
-      "type": "PATTERN",
-      "value": "[!?^$%&/*+.<=>|-]+"
     },
     "character_literal": {
       "type": "SEQ",

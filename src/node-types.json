@@ -165,7 +165,11 @@
           "named": true
         },
         {
-          "type": "let_bind",
+          "type": "let_definition",
+          "named": true
+        },
+        {
+          "type": "operator_definition",
           "named": true
         },
         {
@@ -530,7 +534,7 @@
           "named": true
         },
         {
-          "type": "let_bind",
+          "type": "let_definition",
           "named": true
         },
         {
@@ -655,7 +659,7 @@
     }
   },
   {
-    "type": "let_bind",
+    "type": "let_definition",
     "named": true,
     "fields": {
       "bind": {
@@ -721,11 +725,23 @@
         ]
       },
       "name": {
-        "multiple": false,
+        "multiple": true,
         "required": true,
         "types": [
           {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
             "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "operator",
             "named": true
           }
         ]
@@ -799,7 +815,7 @@
           "named": true
         },
         {
-          "type": "let_bind",
+          "type": "let_definition",
           "named": true
         },
         {
@@ -1138,6 +1154,10 @@
           "named": true
         },
         {
+          "type": "let_definition",
+          "named": true
+        },
+        {
           "type": "let_expression",
           "named": true
         },
@@ -1197,30 +1217,15 @@
       "required": true,
       "types": [
         {
-          "type": "constraint_set",
-          "named": true
-        },
-        {
-          "type": "operator_type",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "operator_type",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
           "type": "bool_type",
           "named": true
         },
         {
           "type": "char_type",
+          "named": true
+        },
+        {
+          "type": "constraint_set",
           "named": true
         },
         {
@@ -2033,10 +2038,6 @@
   {
     "type": "number_literal",
     "named": true
-  },
-  {
-    "type": "operator",
-    "named": false
   },
   {
     "type": "operator",

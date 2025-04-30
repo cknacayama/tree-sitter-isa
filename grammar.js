@@ -95,13 +95,8 @@ module.exports = grammar({
       $.class_definition,
       $.instance_definition,
       $.operator_definition,
+      $.let_definition,
       $._expression,
-    ),
-
-    operator_definition: $ => seq(
-      'operator',
-      optional($.constraint_set),
-      sepBy1($.operator_type, ','),
     ),
 
     _fixity_definition: $ => choice(
@@ -111,9 +106,10 @@ module.exports = grammar({
       'prefix',
     ),
 
-    operator_type: $ => seq(
+    operator_definition: $ => seq(
       $._fixity_definition,
       $.integer_literal,
+      optional($.constraint_set),
       '(', $.operator, ')',
       ':',
       $._type,
@@ -133,7 +129,7 @@ module.exports = grammar({
       $._type_identifier,
       $.identifier,
       optional(
-        seq('=', sepBy1(choice($.value_definition, $.let_bind), ','))
+        seq('=', sepBy1(choice($.value_definition, $.let_definition, $.operator_definition), ','))
       ),
     ),
 
@@ -143,7 +139,7 @@ module.exports = grammar({
       $.path_identifier,
       $._type,
       optional(
-        seq('=', sepBy1($.let_bind, ','))
+        seq('=', sepBy1($.let_definition, ','))
       ),
     ),
 
@@ -254,17 +250,17 @@ module.exports = grammar({
       ']'
     ),
 
-    let_bind: $ => seq(
+    let_definition: $ => seq(
       'let',
-      field('name', $.identifier),
+      field('name', $._symbol),
       repeat(field('parameter', $._simple_pattern)),
       '=',
       field('bind', $._expression),
     ),
 
     let_expression: $ => prec.right(seq(
-      $.let_bind,
-      optional(seq('in', $._expression))
+      $.let_definition,
+      seq('in', $._expression)
     )),
 
     if_expression: $ => seq(
@@ -417,7 +413,14 @@ module.exports = grammar({
       'false'
     ),
 
+    operator: _ => /[!?^$%&/*+.<=>|-]+/,
+
     identifier: _ => /[a-zA-Z_][a-zA-Z0-9_]*/,
+
+    _symbol: $ => choice(
+      seq('(', $.operator, ')'),
+      $.identifier,
+    ),
 
     number_literal: _ => /\d+(\.\d+)?/,
 
@@ -434,7 +437,6 @@ module.exports = grammar({
 
     string_content: _ => /[^"\\\n]+/,
 
-    operator: _ => /[!?^$%&/*+.<=>|-]+/,
 
     character_literal: $ => seq(
       '\'',
