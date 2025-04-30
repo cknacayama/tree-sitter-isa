@@ -34,19 +34,6 @@ function startBy(rule, sep) {
   return seq(optional(sep), rule, repeat(seq(sep, rule)));
 }
 
-/** 
- * @param {string | number} precedence
- * @param {RuleOrLiteral} op
- * @param {RuleOrLiteral} operand
- * @return {PrecLeftRule|PrecRightRule}  
- */
-function binaryExpression(precedence, op, operand, right = false) {
-  if (right) {
-    return prec.right(precedence, seq(field('lhs', operand), field('operator', op), field('rhs', operand)));
-  }
-  return prec.left(precedence, seq(field('lhs', operand), field('operator', op), field('rhs', operand)));
-}
-
 module.exports = grammar({
   name: "isa",
 
@@ -75,7 +62,7 @@ module.exports = grammar({
 
     module_declaration: $ => seq(
       'module',
-      optional('!'),
+      optional('@'),
       $._module_identifier,
       optional(
         seq(
@@ -93,12 +80,12 @@ module.exports = grammar({
 
     import_identifier: $ => seq(
       $.path_identifier,
-      optional($._import_multiple),
+      optional(seq('::', $._import_multiple)),
     ),
 
     _import_multiple: $ => choice(
       $.import_clause,
-      '*'
+      '_'
     ),
 
     _definition: $ => choice(
@@ -107,7 +94,29 @@ module.exports = grammar({
       $.alias_definition,
       $.class_definition,
       $.instance_definition,
+      $.operator_definition,
       $._expression,
+    ),
+
+    operator_definition: $ => seq(
+      'operator',
+      optional($.constraint_set),
+      sepBy1($.operator_type, ','),
+    ),
+
+    _fixity_definition: $ => choice(
+      'infix',
+      'infixl',
+      'infixr',
+      'prefix',
+    ),
+
+    operator_type: $ => seq(
+      $._fixity_definition,
+      $.integer_literal,
+      '(', $.operator, ')',
+      ':',
+      $._type,
     ),
 
     alias_definition: $ => seq(
@@ -197,6 +206,7 @@ module.exports = grammar({
     _primitive_type: $ => choice(
       $.bool_type,
       $.int_type,
+      $.real_type,
       $.char_type,
     ),
 
@@ -208,12 +218,13 @@ module.exports = grammar({
 
     bool_type: _ => 'bool',
     int_type: _ => 'int',
+    real_type: _ => 'real',
     char_type: _ => 'char',
 
     _expression: $ => choice(
       $._primary_expression,
-      $.unary_expression,
-      $.binary_expression,
+      $.prefix_expression,
+      $.infix_expression,
       $.lambda_expression,
       $.call_expression,
       $.let_expression,
@@ -223,12 +234,25 @@ module.exports = grammar({
 
     _primary_expression: $ => prec(10, choice(
       $.path_identifier,
-      $.integer_literal,
+      $.number_literal,
       $.boolean_literal,
       $.string_literal,
       $.character_literal,
-      seq('(', sepBy($._expression, ','), ')'),
+      $.list_literal,
+      $.tuple_literal,
     )),
+
+    tuple_literal: $ => seq(
+      '(',
+      choice(sepBy($._expression, ','), $.operator),
+      ')'
+    ),
+
+    list_literal: $ => seq(
+      '[',
+      sepBy($._expression, ','),
+      ']'
+    ),
 
     let_bind: $ => seq(
       'let',
@@ -253,8 +277,8 @@ module.exports = grammar({
     ),
 
     lambda_expression: $ => seq(
-      'fn',
-      field('parameter', $.identifier),
+      '\\',
+      field('parameter', $._simple_pattern),
       '->',
       $._expression
     ),
@@ -269,29 +293,13 @@ module.exports = grammar({
       field('argument', $._primary_expression),
     )),
 
-    unary_expression: $ => prec.right(choice(
-      seq('-', $._expression),
-      seq('!', $._expression)
-    )),
+    prefix_expression: $ => prec.right(seq($.operator, $._expression)),
 
-    binary_expression: $ => choice(
-      binaryExpression(1, '$', $._expression),
-      binaryExpression(2, '>>', $._expression),
-      binaryExpression(2, '>>=', $._expression),
-      binaryExpression(3, '||', $._expression),
-      binaryExpression(4, '&&', $._expression),
-      binaryExpression(5, '>', $._expression),
-      binaryExpression(5, '>=', $._expression),
-      binaryExpression(5, '<', $._expression),
-      binaryExpression(5, '<=', $._expression),
-      binaryExpression(5, '=', $._expression),
-      binaryExpression(5, '!=', $._expression),
-      binaryExpression(6, '+', $._expression),
-      binaryExpression(6, '-', $._expression),
-      binaryExpression(7, '*', $._expression),
-      binaryExpression(7, '/', $._expression),
-      binaryExpression(7, '%', $._expression),
-      binaryExpression(8, '.', $._expression, true),
+    infix_expression: $ => prec.left(
+      1,
+      seq(
+        $._expression, $.operator, $._expression
+      )
     ),
 
     match_expression: $ => prec.right(seq(
@@ -311,7 +319,21 @@ module.exports = grammar({
       $._simple_pattern,
       $.constructor_pattern,
       $._range_pattern,
+      $.list_pattern,
       $.or_pattern,
+    ),
+
+    list_pattern: $ => seq(
+      '[',
+      optional($._pattern),
+      ']',
+      optional(
+        choice(
+          $.list_pattern,
+          $.identifier,
+          '_'
+        )
+      ),
     ),
 
     _simple_pattern: $ => prec(10, choice(
@@ -338,39 +360,31 @@ module.exports = grammar({
       $.range_from_pattern,
     ),
 
-    range_integer_literal: $ => choice(
-      seq(
-        optional('-'),
-        $.integer_literal,
-      ),
-      $.character_literal
-    ),
-
     range_exclusive_pattern: $ => seq(
-      $.range_integer_literal,
+      $._literal_pattern,
       '..',
-      $.range_integer_literal
+      $._literal_pattern
     ),
 
     range_from_pattern: $ => seq(
-      $.range_integer_literal,
+      $._literal_pattern,
       '..',
     ),
 
     range_to_exclusive_pattern: $ => seq(
       '..',
-      $.range_integer_literal,
+      $._literal_pattern,
     ),
 
     range_to_inclusive_pattern: $ => seq(
       '..=',
-      $.range_integer_literal,
+      $._literal_pattern,
     ),
 
     range_inclusive_pattern: $ => seq(
-      $.range_integer_literal,
+      $._literal_pattern,
       '..=',
-      $.range_integer_literal
+      $._literal_pattern
     ),
 
     constructor_pattern: $ => seq(
@@ -381,9 +395,11 @@ module.exports = grammar({
     ),
 
     _literal_pattern: $ => choice(
-      $.integer_literal,
+      seq(
+        optional('-'),
+        $.number_literal,
+      ),
       $.boolean_literal,
-      $.string_literal,
       $.character_literal,
     ),
 
@@ -403,16 +419,22 @@ module.exports = grammar({
 
     identifier: _ => /[a-zA-Z_][a-zA-Z0-9_]*/,
 
+    number_literal: _ => /\d+(\.\d+)?/,
+
     integer_literal: _ => /\d+/,
 
     string_literal: $ => seq(
       '"',
       repeat(choice(
-        /[^"\\\n]+/,
+        $.string_content,
         $.escape_sequence,
       )),
       token.immediate('"'),
     ),
+
+    string_content: _ => /[^"\\\n]+/,
+
+    operator: _ => /[!?^$%&/*+.<=>|-]+/,
 
     character_literal: $ => seq(
       '\'',
@@ -422,7 +444,6 @@ module.exports = grammar({
       ),
       token.immediate('\''),
     ),
-
 
     escape_sequence: _ => /\\./,
 

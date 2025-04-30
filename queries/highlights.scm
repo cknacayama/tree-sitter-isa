@@ -1,7 +1,7 @@
 (comment) @comment
 
+(number_literal) @constant.builtin
 (integer_literal) @constant.builtin
-(range_integer_literal) @constant.builtin
 (boolean_literal) @boolean
 (escape_sequence) @string.escape
 (string_literal) @string
@@ -33,6 +33,9 @@
 
 (let_bind
   name: (identifier) @function
+  parameter: _)
+(let_bind
+  name: (identifier) @function
   parameter: (path_identifier (root_identifier) @variable.parameter)
     (#lua-match? @variable.parameter "^[a-z_]"))
 (let_bind
@@ -46,37 +49,17 @@
     member: (identifier) @function)
       (#lua-match? @function "^[a-z_]"))
 (lambda_expression
-  parameter: (identifier) @variable.parameter)
+  parameter: (path_identifier (root_identifier) @variable.parameter)
+    (#lua-match? @variable.parameter "^[a-z_]"))
 
 (value_definition
 	name: (identifier) @function
     (function_type))
 
-(binary_expression
-  lhs: (path_identifier (root_identifier) @function)
-	  operator: "$"
-    (#lua-match? @function "^[a-z_]"))
-
-(binary_expression
-	  operator: ">>="
-      rhs: (path_identifier (root_identifier) @function)
-    (#lua-match? @function "^[a-z_]"))
-
-(binary_expression
-  lhs: (path_identifier (root_identifier) @function)
-	  operator: "."
-      (#lua-match? @function "^[a-z_]"))
-
-(binary_expression
-	  operator: "."
-      rhs: (path_identifier (root_identifier) @function)
-      (#lua-match? @function "^[a-z_]"))
-
 [
   "type"
   "alias"
   "let"
-  "fn"
   "match"
   "if"
   "then"
@@ -87,39 +70,33 @@
   "val"
   "class"
   "instance"
+  "operator"
+  "infix"
+  "infixl"
+  "infixr"
+  "prefix"
 ] @keyword
 
 [
-  ">"
-  ">="
-  "<"
-  "<="
-  "="
-  "!="
-  "+"
   "-"
-  "*"
-  "/"
-  "%"
-  "&&"
-  "||"
   "..="
   ".."
-  "."
-  ">>"
-  ">>="
-  "$"
-  "!"
 ] @operator
+
+(operator) @operator
 
 [
   "("
   ")"
   "{"
   "}"
+  "["
+  "]"
 ] @punctuation.bracket
 
 [
+  "="
+  "@"
   ";"
   "|"
   ","
@@ -127,10 +104,12 @@
   "=>"
   ":"
   "::"
+  "\\"
 ] @punctuation.delimiter
 
 (int_type) @type.builtin
 (bool_type) @type.builtin
 (char_type) @type.builtin
+(real_type) @type.builtin
 
 "_" @constant.builtin
