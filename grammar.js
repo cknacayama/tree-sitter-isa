@@ -147,7 +147,6 @@ module.exports = grammar({
       '{',
       sepBy(seq(optional($.path_identifier), $.identifier), ','),
       '}',
-      '=>'
     ),
 
     type_definition: $ => seq(
