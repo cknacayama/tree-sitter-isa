@@ -45,7 +45,6 @@ module.exports = grammar({
   inline: $ => [
     $._simple_type,
     $._simple_pattern,
-    $._type_identifier,
     $._root_identifier,
     $._module_identifier
   ],
@@ -53,11 +52,11 @@ module.exports = grammar({
   word: $ => $.identifier,
 
   rules: {
-    source_file: $ => optional($.module_definitions),
+    source_file: $ => repeat($.module_definition),
 
-    module_definitions: $ => startBy(
-      sepBy1($._definition, ';'),
-      $.module_declaration
+    module_definition: $ => seq(
+      $.module_declaration,
+      repeat(seq($._definition, ';')),
     ),
 
     module_declaration: $ => seq(
@@ -99,7 +98,7 @@ module.exports = grammar({
       $._expression,
     ),
 
-    _fixity_definition: $ => choice(
+    _fixity_definition: _ => choice(
       'infix',
       'infixl',
       'infixr',
@@ -109,7 +108,8 @@ module.exports = grammar({
     operator_definition: $ => seq(
       $._fixity_definition,
       $.integer_literal,
-      optional($.constraint_set),
+      optional($.type_parameters),
+      optional($.if_clause),
       '(', $.operator, ')',
       ':',
       $._type,
@@ -117,7 +117,7 @@ module.exports = grammar({
 
     alias_definition: $ => seq(
       'alias',
-      $._type_identifier,
+      $.identifier,
       repeat($.identifier),
       '=',
       $._type
@@ -125,33 +125,67 @@ module.exports = grammar({
 
     class_definition: $ => seq(
       'class',
-      optional($.constraint_set),
-      $._type_identifier,
+      optional($.type_parameters),
+      optional($.if_clause),
       $.identifier,
+      repeat($.identifier),
+      optional(seq(':', $._class_constraint)),
       optional(
-        seq('=', sepBy1(choice($.value_definition, $.let_definition, $.operator_definition), ','))
+        seq('=', sepBy1($._class_member, ','))
       ),
     ),
 
     instance_definition: $ => seq(
       'instance',
-      optional($.constraint_set),
-      $.path_identifier,
+      optional($.type_parameters),
+      optional($.if_clause),
       $._type,
+      ':',
+      $.class_projection,
       optional(
         seq('=', sepBy1($.let_definition, ','))
       ),
     ),
 
-    constraint_set: $ => seq(
+    type_parameters: $ => seq(
       '{',
-      sepBy(seq(optional($.path_identifier), $.identifier), ','),
+      sepBy($._type_parameter, ','),
       '}',
     ),
 
+    _type_parameter: $ => choice(
+      $.identifier,
+      seq($.identifier, ':', $._class_constraint),
+    ),
+
+    if_clause: $ => seq(
+      'if',
+      sepBy($.type_constraint, ','),
+      '=>'
+    ),
+
+    _class_constraint: $ => choice(
+      $.class_projection,
+      seq('{', sepBy($.class_projection, ','), '}'),
+    ),
+
+    type_constraint: $ => seq(
+      $._type,
+      ':',
+      $._class_constraint
+    ),
+
+    class_projection: $ => seq(
+      $.path_identifier,
+      repeat($._simple_type),
+    ),
+
+    _class_member: $ =>
+      choice($.value_definition, $.let_definition, $.operator_definition),
+
     type_definition: $ => seq(
       'type',
-      $._type_identifier,
+      $.identifier,
       repeat($.identifier),
       '=',
       startBy(
@@ -162,33 +196,34 @@ module.exports = grammar({
 
     value_definition: $ => seq(
       'val',
-      optional($.constraint_set),
+      optional($.type_parameters),
+      optional($.if_clause),
       field('name', $.identifier),
       repeat($.identifier),
       ':',
-      $._type
+      field('value_type', $._type),
     ),
 
     constructor: $ => seq(
-      field('ctor', $.identifier),
+      $.identifier,
       repeat($._simple_type),
     ),
 
     _type: $ => choice(
       $._primitive_type,
       $._simple_type,
-      $.polymorphic_type,
+      $.parameterized_type,
       $.function_type,
     ),
 
     function_type: $ => seq(
-      choice($._simple_type, $.polymorphic_type),
+      choice($._simple_type, $.parameterized_type),
       '->',
-      choice($.function_type, $._simple_type, $.polymorphic_type),
+      choice($.function_type, $._simple_type, $.parameterized_type),
     ),
 
-    polymorphic_type: $ => seq(
-      $._simple_type,
+    parameterized_type: $ => seq(
+      $.path_identifier,
       repeat1($._simple_type),
     ),
 
@@ -403,7 +438,6 @@ module.exports = grammar({
       seq($.path_identifier, '::', field('member', $.identifier)),
     ),
 
-    _type_identifier: $ => alias($.identifier, $.type_identifier),
     _module_identifier: $ => alias($.identifier, $.module_identifier),
     _root_identifier: $ => alias($.identifier, $.root_identifier),
 

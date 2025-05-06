@@ -28,11 +28,11 @@
           "named": true
         },
         {
-          "type": "path_identifier",
+          "type": "parameterized_type",
           "named": true
         },
         {
-          "type": "polymorphic_type",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -41,10 +41,6 @@
         },
         {
           "type": "tuple_type",
-          "named": true
-        },
-        {
-          "type": "type_identifier",
           "named": true
         }
       ]
@@ -157,11 +153,15 @@
       "required": true,
       "types": [
         {
-          "type": "constraint_set",
+          "type": "class_projection",
           "named": true
         },
         {
           "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "if_clause",
           "named": true
         },
         {
@@ -173,7 +173,7 @@
           "named": true
         },
         {
-          "type": "type_identifier",
+          "type": "type_parameters",
           "named": true
         },
         {
@@ -184,19 +184,35 @@
     }
   },
   {
-    "type": "constraint_set",
+    "type": "class_projection",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "bool_type",
+          "named": true
+        },
+        {
+          "type": "char_type",
+          "named": true
+        },
+        {
+          "type": "int_type",
           "named": true
         },
         {
           "type": "path_identifier",
+          "named": true
+        },
+        {
+          "type": "real_type",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
           "named": true
         }
       ]
@@ -205,21 +221,10 @@
   {
     "type": "constructor",
     "named": true,
-    "fields": {
-      "ctor": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "bool_type",
@@ -227,6 +232,10 @@
         },
         {
           "type": "char_type",
+          "named": true
+        },
+        {
+          "type": "identifier",
           "named": true
         },
         {
@@ -315,11 +324,11 @@
           "named": true
         },
         {
-          "type": "path_identifier",
+          "type": "parameterized_type",
           "named": true
         },
         {
-          "type": "polymorphic_type",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -328,6 +337,21 @@
         },
         {
           "type": "tuple_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "if_clause",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "type_constraint",
           "named": true
         }
       ]
@@ -522,11 +546,15 @@
           "named": true
         },
         {
-          "type": "constraint_set",
+          "type": "class_projection",
           "named": true
         },
         {
           "type": "function_type",
+          "named": true
+        },
+        {
+          "type": "if_clause",
           "named": true
         },
         {
@@ -538,11 +566,11 @@
           "named": true
         },
         {
-          "type": "path_identifier",
+          "type": "parameterized_type",
           "named": true
         },
         {
-          "type": "polymorphic_type",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -551,6 +579,10 @@
         },
         {
           "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "type_parameters",
           "named": true
         }
       ]
@@ -1110,7 +1142,7 @@
     }
   },
   {
-    "type": "module_definitions",
+    "type": "module_definition",
     "named": true,
     "fields": {},
     "children": {
@@ -1225,11 +1257,11 @@
           "named": true
         },
         {
-          "type": "constraint_set",
+          "type": "function_type",
           "named": true
         },
         {
-          "type": "function_type",
+          "type": "if_clause",
           "named": true
         },
         {
@@ -1245,11 +1277,11 @@
           "named": true
         },
         {
-          "type": "path_identifier",
+          "type": "parameterized_type",
           "named": true
         },
         {
-          "type": "polymorphic_type",
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -1258,6 +1290,10 @@
         },
         {
           "type": "tuple_type",
+          "named": true
+        },
+        {
+          "type": "type_parameters",
           "named": true
         }
       ]
@@ -1327,37 +1363,7 @@
     }
   },
   {
-    "type": "path_identifier",
-    "named": true,
-    "fields": {
-      "member": {
-        "multiple": false,
-        "required": false,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "path_identifier",
-          "named": true
-        },
-        {
-          "type": "root_identifier",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "polymorphic_type",
+    "type": "parameterized_type",
     "named": true,
     "fields": {},
     "children": {
@@ -1386,6 +1392,36 @@
         },
         {
           "type": "tuple_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "path_identifier",
+    "named": true,
+    "fields": {
+      "member": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "path_identifier",
+          "named": true
+        },
+        {
+          "type": "root_identifier",
           "named": true
         }
       ]
@@ -1583,11 +1619,11 @@
     "root": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
         {
-          "type": "module_definitions",
+          "type": "module_definition",
           "named": true
         }
       ]
@@ -1771,11 +1807,58 @@
           "named": true
         },
         {
+          "type": "parameterized_type",
+          "named": true
+        },
+        {
           "type": "path_identifier",
           "named": true
         },
         {
-          "type": "polymorphic_type",
+          "type": "real_type",
+          "named": true
+        },
+        {
+          "type": "tuple_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_constraint",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "bool_type",
+          "named": true
+        },
+        {
+          "type": "char_type",
+          "named": true
+        },
+        {
+          "type": "class_projection",
+          "named": true
+        },
+        {
+          "type": "function_type",
+          "named": true
+        },
+        {
+          "type": "int_type",
+          "named": true
+        },
+        {
+          "type": "parameterized_type",
+          "named": true
+        },
+        {
+          "type": "path_identifier",
           "named": true
         },
         {
@@ -1804,9 +1887,24 @@
         {
           "type": "identifier",
           "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_parameters",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "class_projection",
+          "named": true
         },
         {
-          "type": "type_identifier",
+          "type": "identifier",
           "named": true
         }
       ]
@@ -1825,50 +1923,60 @@
             "named": true
           }
         ]
+      },
+      "value_type": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "bool_type",
+            "named": true
+          },
+          {
+            "type": "char_type",
+            "named": true
+          },
+          {
+            "type": "function_type",
+            "named": true
+          },
+          {
+            "type": "int_type",
+            "named": true
+          },
+          {
+            "type": "parameterized_type",
+            "named": true
+          },
+          {
+            "type": "path_identifier",
+            "named": true
+          },
+          {
+            "type": "real_type",
+            "named": true
+          },
+          {
+            "type": "tuple_type",
+            "named": true
+          }
+        ]
       }
     },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
-        {
-          "type": "bool_type",
-          "named": true
-        },
-        {
-          "type": "char_type",
-          "named": true
-        },
-        {
-          "type": "constraint_set",
-          "named": true
-        },
-        {
-          "type": "function_type",
-          "named": true
-        },
         {
           "type": "identifier",
           "named": true
         },
         {
-          "type": "int_type",
+          "type": "if_clause",
           "named": true
         },
         {
-          "type": "path_identifier",
-          "named": true
-        },
-        {
-          "type": "polymorphic_type",
-          "named": true
-        },
-        {
-          "type": "real_type",
-          "named": true
-        },
-        {
-          "type": "tuple_type",
+          "type": "type_parameters",
           "named": true
         }
       ]
@@ -1924,6 +2032,10 @@
   },
   {
     "type": "=",
+    "named": false
+  },
+  {
+    "type": "=>",
     "named": false
   },
   {
@@ -2066,10 +2178,6 @@
   {
     "type": "type",
     "named": false
-  },
-  {
-    "type": "type_identifier",
-    "named": true
   },
   {
     "type": "val",
